@@ -32,12 +32,12 @@ public class DiscernController {
     public RespBean discernImage(@RequestPart("image") MultipartFile image) {
 
         BufferedImage srcImage;
-        String res = null;
+        String[] res = null;
         RespBean respBean = new RespBean();
         try {
             FileInputStream in = (FileInputStream) image.getInputStream();
             srcImage = ImageIO.read(in);
-            res = classifyUtils.predict(srcImage);
+            res = classifyUtils.predict(srcImage).split(" ");
         } catch (IOException e) {
             e.printStackTrace();
             return RespBean.error("识别出错，请联系管理员");
