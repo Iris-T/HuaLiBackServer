@@ -2,4 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.baobao.server.mapper.UserMapper">
 
+    <insert id="insertOneUser" parameterType="cn.baobao.server.pojo.User">
+        INSERT INTO user(`id`, `phone`, `password`, `name`, `address`)
+        VALUES (#{user.id}, #{user.phone}, #{user.password}, #{user.name}, #{user.address})
+    </insert>
 </mapper>

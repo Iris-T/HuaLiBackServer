@@ -1,8 +1,13 @@
 package cn.baobao.server.pojo;
 
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * <p>
@@ -12,6 +17,10 @@ import io.swagger.annotations.ApiModelProperty;
  * @author Iris
  * @since 2022-03-22
  */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@TableName("user")
 @ApiModel(value = "User对象", description = "")
 public class User implements Serializable {
 
@@ -37,67 +46,4 @@ public class User implements Serializable {
 
     @ApiModelProperty("收货地址")
     private String address;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    public Integer getTotalPoint() {
-        return totalPoint;
-    }
-
-    public void setTotalPoint(Integer totalPoint) {
-        this.totalPoint = totalPoint;
-    }
-    public Integer getCurrentPoint() {
-        return currentPoint;
-    }
-
-    public void setCurrentPoint(Integer currentPoint) {
-        this.currentPoint = currentPoint;
-    }
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-            "id=" + id +
-            ", phone=" + phone +
-            ", password=" + password +
-            ", totalPoint=" + totalPoint +
-            ", currentPoint=" + currentPoint +
-            ", name=" + name +
-            ", address=" + address +
-        "}";
-    }
 }

@@ -2,8 +2,13 @@ package cn.baobao.server.pojo;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * <p>
@@ -13,6 +18,10 @@ import io.swagger.annotations.ApiModelProperty;
  * @author Iris
  * @since 2022-03-22
  */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@TableName("logisticsinfo")
 @ApiModel(value = "Logisticsinfo对象", description = "")
 public class Logisticsinfo implements Serializable {
 
@@ -29,43 +38,4 @@ public class Logisticsinfo implements Serializable {
 
     @ApiModelProperty("物流信息创建时间")
     private LocalDate created;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-    public String getGid() {
-        return gid;
-    }
-
-    public void setGid(String gid) {
-        this.gid = gid;
-    }
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-    public LocalDate getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDate created) {
-        this.created = created;
-    }
-
-    @Override
-    public String toString() {
-        return "Logisticsinfo{" +
-            "id=" + id +
-            ", gid=" + gid +
-            ", uid=" + uid +
-            ", created=" + created +
-        "}";
-    }
 }

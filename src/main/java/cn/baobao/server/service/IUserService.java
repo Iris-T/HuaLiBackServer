@@ -1,5 +1,6 @@
 package cn.baobao.server.service;
 
+import cn.baobao.server.pojo.RespBean;
 import cn.baobao.server.pojo.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IUserService extends IService<User> {
 
+    /**
+     * @see 创建用户，插入用户记录
+     * @param user
+     * @return
+     */
+    RespBean insertOneUser(User user);
 }
