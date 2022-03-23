@@ -1,9 +1,18 @@
 package cn.baobao.server.controller;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import cn.baobao.server.pojo.Admin;
+import cn.baobao.server.pojo.RespBean;
+import cn.baobao.server.service.IAdminService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,5 +25,40 @@ import org.springframework.stereotype.Controller;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+
+    @Autowired
+    private IAdminService adminService;
+
+    @ApiOperation(value = "后台管理员登录接口")
+    @PostMapping("/login")
+    @ResponseBody
+    public RespBean login(@RequestBody Admin admin) {
+        // 登录信息不存在，登录失败
+        if (null==admin) {
+            return RespBean.error("登录失败", null);
+        }
+        String username = admin.getUsername();
+        String password = admin.getPassword();
+        // 登录信息不全，登录失败
+        if (ObjectUtils.isEmpty(username) || ObjectUtils.isEmpty(password)) {
+            return RespBean.error("登录失败", null);
+        }
+        // 查找用户信息
+        Admin realUser = adminService.getOne(new QueryWrapper<Admin>()
+                .eq("username", username)
+                .eq("password", password));
+
+        // 避免信息泄露
+        realUser.setPassword(null);
+        return ObjectUtils.isEmpty(realUser) ? RespBean.error("登录失败", null)
+                : RespBean.success("登录成功", realUser);
+    }
+
+    @ApiOperation(value = "获取（所有）管理员信息列表")
+    @GetMapping("/all")
+    @ResponseBody
+    public List<Admin> getAllAdmins() {
+        return adminService.list();
+    }
 
 }

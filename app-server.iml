@@ -122,11 +122,5 @@
     <orderEntry type="library" name="Maven: org.tensorflow:libtensorflow:1.12.0" level="project" />
     <orderEntry type="library" name="Maven: org.tensorflow:libtensorflow_jni:1.12.0" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.onnxruntime:onnxruntime:1.9.0" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-thymeleaf:2.5.4" level="project" />
-    <orderEntry type="library" name="Maven: org.thymeleaf:thymeleaf-spring5:3.0.12.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.thymeleaf:thymeleaf:3.0.12.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.attoparser:attoparser:2.0.5.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.unbescape:unbescape:1.1.6.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE" level="project" />
   </component>
 </module>
