@@ -4,12 +4,10 @@ package cn.baobao.server.controller;
 import cn.baobao.server.pojo.Errorinfo;
 import cn.baobao.server.pojo.RespBean;
 import cn.baobao.server.service.IErrorinfoService;
+import cn.baobao.server.utils.CommonUtils;
 import cn.baobao.server.utils.FileUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,6 +36,8 @@ public class ErrorinfoController {
     @Autowired
     private IErrorinfoService errorinfoService;
     @Autowired
+    private CommonUtils commonUtils;
+    @Autowired
     private FileUtils fileUtils;
 
     @ApiOperation(value = "用户问题反馈")
@@ -50,30 +49,30 @@ public class ErrorinfoController {
         }
 
         Errorinfo errorinfo = new Errorinfo();
-        errorinfo.setId(fileUtils.getFileName());
+        String only1Id = commonUtils.getOnly1Id();
+        errorinfo.setId(only1Id);
         errorinfo.setInfo(errinfo);
-        errorinfo.setCreated(LocalDateTime.now().toLocalDate());
-        errorinfo.setIschecked(false);
+        errorinfo.setCreated(LocalDate.now());
 
         if (images == null || images.length < 1) {
             errorinfoService.save(errorinfo);
             return RespBean.success("反馈成功!");
         }
 
-        String imgAddr = "";
+        String imgPaths = "";
         for (MultipartFile image : images) {
-            String fileName = fileUtils.getFileName();
+            String fileName = fileUtils.getOnly1FileName();
             try {
-                image.transferTo(new File("E:/serverImgs/".concat(fileName).concat(".jpg")));
-                imgAddr = imgAddr.concat(fileName).concat(",");
-                errorinfo.setImgaddr(imgAddr);
-                errorinfoService.save(errorinfo);
-                return RespBean.success("反馈成功!");
+                fileUtils.saveImg(fileName, image);
+                imgPaths = imgPaths.concat(fileName+",");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return RespBean.error("反馈失败，未知错误。请联系管理员!");
+        errorinfo.setImgaddr(imgPaths);
+        return (errorinfoService.save(errorinfo))
+                ? RespBean.success("反馈成功")
+                : RespBean.error("反馈失败，未知错误。请联系管理员!");
     }
 
     @ApiOperation(value = "获取所有反馈信息（不分页）")

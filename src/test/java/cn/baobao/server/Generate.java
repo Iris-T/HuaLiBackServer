@@ -6,12 +6,16 @@ import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.Scanner;
 
 /**
  * @author Iris 2022/2/28
  */
 public class Generate {
     public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        System.out.print("请输入需要自动导出代码的表名，多表名用英文,分隔>>>");
+        String[] tables = in.next().split(",");
         FastAutoGenerator.create("jdbc:mysql://localhost:3306/managementdb?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai", "root", "123456")
                 .globalConfig(builder -> {
                     builder.author("Iris") // 设置作者
@@ -24,7 +28,7 @@ public class Generate {
                             .pathInfo(Collections.singletonMap(OutputFile.mapperXml, "E://")); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("logisticsinfo", "plog", "user") // 设置需要生成的表名
+                    builder.addInclude(tables) // 设置需要生成的表名
                             .addTablePrefix("t_", "c_"); // 设置过滤表前缀
                 })
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板

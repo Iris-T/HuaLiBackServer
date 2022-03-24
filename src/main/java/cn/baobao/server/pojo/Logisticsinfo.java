@@ -36,6 +36,15 @@ public class Logisticsinfo implements Serializable {
     @ApiModelProperty("用户ID")
     private String uid;
 
+    @ApiModelProperty("审核人（管理员）ID")
+    private String aid;
+
     @ApiModelProperty("物流信息创建时间")
     private LocalDate created;
+
+    @ApiModelProperty("审核状态")
+    private boolean ischeck;
+
+    @ApiModelProperty("审核时间")
+    private LocalDate modified;
 }

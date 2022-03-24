@@ -4,6 +4,7 @@ package cn.baobao.server.controller;
 import cn.baobao.server.pojo.RespBean;
 import cn.baobao.server.pojo.User;
 import cn.baobao.server.service.IUserService;
+import cn.baobao.server.utils.CommonUtils;
 import cn.baobao.server.utils.FileUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.ApiOperation;
@@ -30,7 +31,7 @@ public class UserController {
     @Autowired
     private IUserService userService;
     @Autowired
-    private FileUtils fileUtils;
+    private CommonUtils commonUtils;
 
     @ApiOperation(value = "用户登录接口")
     @PostMapping("/login")
@@ -51,10 +52,11 @@ public class UserController {
         User realUser = userService.getOne(new QueryWrapper<User>()
                 .eq("phone", phone)
                 .eq("password", password));
+        if (ObjectUtils.isEmpty(realUser)) {
+            return RespBean.error("登录失败", null);
+        }
         realUser.setPassword(null);
-
-        return (ObjectUtils.isEmpty(realUser)) ? RespBean.error("登录失败", null)
-                : RespBean.success("登录成功", realUser);
+        return RespBean.success("登录成功", realUser);
     }
 
     @ApiOperation(value = "用户注册")
@@ -64,7 +66,7 @@ public class UserController {
         if (ObjectUtils.isEmpty(user)) {
             return RespBean.error("注册失败，参数错误", null);
         }
-        String uid = fileUtils.getFileName();
+        String uid = commonUtils.getOnly1Id();
         user.setId(uid);
         return userService.insertOneUser(user);
     }
@@ -75,7 +77,5 @@ public class UserController {
     public List<User> getAllUser() {
         return userService.list();
     }
-
-
 
 }
