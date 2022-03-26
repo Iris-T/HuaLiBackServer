@@ -42,9 +42,11 @@ public class GoodsController {
     public RespBean add1Good(@RequestBody Goods good) {
 
         if (ObjectUtils.isEmpty(good)) return RespBean.error("数据有误,请重新添加");
-        good.setId(commonUtils.getOnly1Id());
+        String only1Id = commonUtils.getOnly1Id();
+        good.setId(only1Id);
         good.setCreated(LocalDate.now());
-        return goodsService.save(good) ? RespBean.success("添加商品成功") : RespBean.error("添加失败，请联系服务器管理员");
+        good.setIsactive(true);
+        return goodsService.save(good) ? RespBean.success("添加商品成功",only1Id) : RespBean.error("添加失败，请联系服务器管理员");
     }
 
     @ApiOperation(value = "上传商品图片")
