@@ -47,4 +47,7 @@ public class Goods implements Serializable {
 
     @ApiModelProperty("上架管理员ID")
     private String aid;
+
+    @ApiModelProperty("商品是否启用")
+    private boolean isactive;
 }

@@ -1,15 +1,25 @@
 package cn.baobao.server;
 
+import cn.baobao.server.utils.FileUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDateTime;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.UUID;
 
 /**
  * @author Iris 2022/3/1
  */
-public class Only1Fname {
+public class FileUtilTest {
+
+    @Autowired
+    private FileUtils fileUtils;
 
     @Test
     public void getFileName() throws NoSuchMethodException {

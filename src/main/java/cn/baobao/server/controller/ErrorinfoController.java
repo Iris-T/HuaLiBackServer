@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -54,20 +52,12 @@ public class ErrorinfoController {
         errorinfo.setInfo(errinfo);
         errorinfo.setCreated(LocalDate.now());
 
-        if (images == null || images.length < 1) {
-            errorinfoService.save(errorinfo);
-            return RespBean.success("反馈成功!");
-        }
-
         String imgPaths = "";
         for (MultipartFile image : images) {
             String fileName = fileUtils.getOnly1FileName();
-            try {
-                fileUtils.saveImg(fileName, image);
-                imgPaths = imgPaths.concat(fileName+",");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            boolean flag = fileUtils.saveImg(fileName, image, "errinfos", only1Id);
+            if (!flag) return RespBean.error("添加图片失败，请联系管理员");
+            imgPaths = imgPaths.concat(fileName+",");
         }
         errorinfo.setImgaddr(imgPaths);
         return (errorinfoService.save(errorinfo))
@@ -89,10 +79,13 @@ public class ErrorinfoController {
     @PostMapping("/up/{id}/{isValid}")
     @ResponseBody
     public RespBean update(@PathVariable("id") String id, @PathVariable("isValid") boolean isValid) {
+        if (ObjectUtils.isEmpty(id) || ObjectUtils.isEmpty(isValid)) {
+            return RespBean.error("提交失败,数据有误");
+        }
         // 审核结果有效
         Errorinfo errorinfo = errorinfoService.getById(id);
         if (ObjectUtils.isEmpty(errorinfo)) {
-            return RespBean.error("提交失败,错误信息有误");
+            return RespBean.error("提交失败,数据有误");
         }
         if (isValid) {
             // 图片继续存放，更新审核状态和更新时间
@@ -101,10 +94,7 @@ public class ErrorinfoController {
             errorinfoService.updateById(errorinfo);
         } else {
             // 删除图片
-            String[] imgAddrList = errorinfo.getImgaddr().split(",");
-            for (String imgName : imgAddrList) {
-                fileUtils.deleteFile(imgName);
-            }
+            fileUtils.delImg(errorinfo.getId(), "errinfos");
             // 删除数据库记录
             errorinfoService.removeById(id);
         }
