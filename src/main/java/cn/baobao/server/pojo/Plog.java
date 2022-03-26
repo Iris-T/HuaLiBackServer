@@ -34,7 +34,7 @@ public class Plog implements Serializable {
     private String uid;
 
     @ApiModelProperty("图片地址数组，以,分隔")
-    private String addrs;
+    private String imgs;
 
     @ApiModelProperty("plog描述")
     private String log;
@@ -42,7 +42,7 @@ public class Plog implements Serializable {
     @ApiModelProperty("plog创建时间")
     private LocalDate created;
 
-    @ApiModelProperty("plog审核状态")
+    @ApiModelProperty("plog审核状态,0未审核,1通过,2违规")
     private Integer ischeck;
 
     @ApiModelProperty("审核时间")

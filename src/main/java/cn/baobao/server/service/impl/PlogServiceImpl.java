@@ -4,7 +4,11 @@ import cn.baobao.server.pojo.Plog;
 import cn.baobao.server.mapper.PlogMapper;
 import cn.baobao.server.service.IPlogService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +21,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class PlogServiceImpl extends ServiceImpl<PlogMapper, Plog> implements IPlogService {
 
+    @Autowired
+    private PlogMapper plogMapper;
+
+    @Override
+    public List<Plog> falseRecommend() {
+        return plogMapper.getRandomPlogs();
+    }
 }

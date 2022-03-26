@@ -3,6 +3,7 @@ package cn.baobao.server.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -32,7 +33,7 @@ public class FileUtils {
      * @param   folder  删除路径
      */
     public void delImg(String id, String folder) {
-        File file = new File(PRE_PATH+"/"+folder+"/"+id);
+        File file = new File(String.format("%s/%s/%s", PRE_PATH, folder, id));
         // 路径为文件且不为空则进行删除
         if (file.isFile()) {
             file.delete(); // 删除文件
@@ -41,29 +42,42 @@ public class FileUtils {
         }
     }
 
-    public boolean saveImg(String imgName, MultipartFile image, String folder, String id) {
+    /**
+     * 存储plog -- 以用户id作为大文件夹，以pid做小文件夹
+     */
+    public boolean saveImg(String imgName, MultipartFile image, String folder, String uid, String id) {
         try {
-            File file = new File(PRE_PATH + folder + "/" + id);
-            if (!file.exists()) {
-                file.mkdir();
+            createDir(folder, uid, id);
+            if (ObjectUtils.isEmpty(uid)) {
+                image.transferTo(new File(String.format("%s%s/%s/%s.jpg", PRE_PATH, folder, id, imgName)));
+            } else {
+                image.transferTo(new File(String.format("%s%s/%s/%s/%s.jpg", PRE_PATH, folder, uid, id, imgName)));
             }
-            // 以gid为文件夹分类
-            image.transferTo(new File(PRE_PATH +folder+"/"+id+"/"+imgName+".jpg"));
-            logger.info("===添加图片"+imgName+"成功===");
+            logger.info(String.format("===存储图片%s成功===", imgName));
             return true;
         } catch (IOException e) {
-            logger.error("===添加图片失败，原因是："+e.getMessage()+"===");
+            logger.error("===存储图片失败，原因是===>"+e.getMessage()+"===");
             return false;
         }
     }
 
-    public BufferedImage getImg(String imgName, String folder, String id) {
+    /**
+     * 获取到图片的流文件
+     * @param imgName 图片名
+     * @param folder 文件夹
+     * @param uid 用户ID（可为空）
+     * @param id 图片相关记录ID
+     * @return
+     */
+    public BufferedImage getImg(String imgName, String folder, String uid, String id) {
         BufferedImage image = null;
         try {
-            image = ImageIO.read(Files.newInputStream(Paths.get(PRE_PATH +folder+"/"+id+"/"+imgName+".jpg")));
-            logger.info("===图片"+imgName+"成功找到===");
+            image = (ObjectUtils.isEmpty(uid))
+                    ? ImageIO.read(Files.newInputStream(Paths.get(String.format("%s%s/%s/%s.jpg", PRE_PATH, folder, id, imgName))))
+                    : ImageIO.read(Files.newInputStream(Paths.get(String.format("%s%s/%s/%s/%s.jpg", PRE_PATH, folder, uid, id, imgName))));
+            logger.info(String.format("===图片%s成功找到===", imgName));
         } catch (IOException e) {
-            logger.error("===图片未找到，将使用error.jpg===");
+            logger.error(String.format("===图片%s未找到，将使用error.jpg===", imgName));
         }
         return image == null ? getErrorImg() : image;
     }
@@ -90,5 +104,14 @@ public class FileUtils {
         return time.concat(uuid);
     }
 
-
+    public void createDir(String folder, String uid, String id) {
+        if (!ObjectUtils.isEmpty(uid)) {
+            File uFile = new File(String.format("%s%s/%s", PRE_PATH, "plogs", uid));
+            uFile.mkdir();
+        }
+        if (!ObjectUtils.isEmpty(id)) {
+            File file = new File(String.format("%s%s/%s/%s", PRE_PATH, folder, uid, id));
+            file.mkdir();
+        }
+    }
 }

@@ -32,6 +32,8 @@ public class UserController {
     private IUserService userService;
     @Autowired
     private CommonUtils commonUtils;
+    @Autowired
+    private FileUtils fileUtils;
 
     @ApiOperation(value = "用户登录接口")
     @PostMapping("/login")
@@ -68,7 +70,9 @@ public class UserController {
         }
         String uid = commonUtils.getOnly1Id();
         user.setId(uid);
-        return userService.insertOneUser(user);
+        RespBean respBean = userService.insertOneUser(user);
+        fileUtils.createDir("plogs", uid, null);
+        return respBean;
     }
 
     @ApiOperation(value = "获取所有用户")

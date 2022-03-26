@@ -62,7 +62,7 @@ public class GoodsController {
 
         for (MultipartFile image : images) {
             String fileName = fileUtils.getOnly1FileName();
-            fileUtils.saveImg(fileName, image, "goods", gid);
+            fileUtils.saveImg(fileName, image, "goods", null, gid);
             imgPaths = imgPaths.concat(fileName+",");
         }
 

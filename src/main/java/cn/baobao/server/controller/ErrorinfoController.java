@@ -55,7 +55,7 @@ public class ErrorinfoController {
         String imgPaths = "";
         for (MultipartFile image : images) {
             String fileName = fileUtils.getOnly1FileName();
-            boolean flag = fileUtils.saveImg(fileName, image, "errinfos", only1Id);
+            boolean flag = fileUtils.saveImg(fileName, image, "errinfos", null, only1Id);
             if (!flag) return RespBean.error("添加图片失败，请联系管理员");
             imgPaths = imgPaths.concat(fileName+",");
         }

@@ -2,4 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.baobao.server.mapper.PlogMapper">
 
+    <select id="getRandomPlogs" resultType="cn.baobao.server.pojo.Plog">
+        SELECT *
+        FROM plog
+        WHERE ischeck = 1
+        ORDER BY RAND()
+        LIMIT 6
+    </select>
 </mapper>
