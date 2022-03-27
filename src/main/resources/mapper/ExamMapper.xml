@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.baobao.server.mapper.ExamMapper">
+
+    <select id="getRandomCntProbs" resultType="cn.baobao.server.pojo.Exam">
+        SELECT *
+        FROM exam
+        ORDER BY RAND()
+        LIMIT #{cnt}
+    </select>
+
+    <select id="getAnsById" resultType="java.lang.String">
+        SELECT ans FROM exam WHERE id in
+        <foreach collection="ids" index="inx" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

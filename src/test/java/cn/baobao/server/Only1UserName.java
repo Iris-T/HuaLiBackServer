@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -18,5 +19,13 @@ public class Only1UserName {
         String date = LocalDateTime.now().toString().replace("-", "").split("T")[0];
         System.out.println("uuid>>>".concat(uuid));
         System.out.println("date>>>".concat(date));
+    }
+
+    @Test
+    public void getOnly1Id() {
+        String uuid = UUID.randomUUID().toString().toUpperCase().split("-")[0];
+        // 当前时间
+        String time = String.valueOf(new Date().getTime());
+        System.out.println(uuid.concat(time));
     }
 }
