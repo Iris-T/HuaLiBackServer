@@ -2,11 +2,9 @@ package cn.baobao.server.controller;
 
 
 import cn.baobao.server.pojo.Exam;
-import cn.baobao.server.pojo.IdsWithAns;
 import cn.baobao.server.pojo.RespBean;
 import cn.baobao.server.service.IExamService;
 import cn.baobao.server.utils.CommonUtils;
-import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>

@@ -31,3 +31,9 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+file:
+  image:
+    path: E:/AppServerImgs/
+    plog: E:/AppServerImgs/plogs/
+    good: E:/AppServerImgs/goods/
+    errinfo: E:/AppServerImgs/errinfos/

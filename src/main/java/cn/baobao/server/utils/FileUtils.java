@@ -2,16 +2,15 @@ package cn.baobao.server.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -24,7 +23,8 @@ import static org.apache.catalina.startup.ExpandWar.deleteDir;
 @Component
 public class FileUtils {
 
-    private final String PRE_PATH = "E:/serverImgs/";
+    @Value("${file.image.path}")
+    private String PRE_PATH;
     private final Logger logger = LoggerFactory.getLogger("FileInfo");
 
     /**
@@ -69,28 +69,21 @@ public class FileUtils {
      * @param id 图片相关记录ID
      * @return
      */
-    public BufferedImage getImg(String imgName, String folder, String uid, String id) {
-        BufferedImage image = null;
+    public byte[] getImg(String imgName, String folder, String uid, String id) {
+        String imageLink = (uid == null)
+            ? String.format("%s%s%s/%s.jpg", PRE_PATH, folder, id, imgName)
+            : String.format("%s%s%s/%s/%s.jpg", PRE_PATH, folder, uid, id, imgName);
+        File file = new File(imageLink);
+        byte[] bytes = new byte[0];
+        FileInputStream inputStream = null;
         try {
-            image = (ObjectUtils.isEmpty(uid))
-                    ? ImageIO.read(Files.newInputStream(Paths.get(String.format("%s%s/%s/%s.jpg", PRE_PATH, folder, id, imgName))))
-                    : ImageIO.read(Files.newInputStream(Paths.get(String.format("%s%s/%s/%s/%s.jpg", PRE_PATH, folder, uid, id, imgName))));
-            logger.info(String.format("===图片%s成功找到===", imgName));
-        } catch (IOException e) {
-            logger.error(String.format("===图片%s未找到，将使用error.jpg===", imgName));
-        }
-        return image == null ? getErrorImg() : image;
-    }
-
-    private BufferedImage getErrorImg() {
-        BufferedImage image = null;
-        try {
-            image = ImageIO.read(Files.newInputStream(Paths.get(PRE_PATH + "static/error.jpg")));
-            logger.info("===error.jpg成功找到===");
+            inputStream = new FileInputStream(file);
+            bytes = new byte[inputStream.available()];
+            inputStream.read(bytes, 0, inputStream.available());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return image;
+        return bytes;
     }
 
     /**

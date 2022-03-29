@@ -28,7 +28,7 @@ import java.util.List;
  * @since 2022-02-28
  */
 @Controller
-@RequestMapping("/ei")
+@RequestMapping("/errinfo")
 public class ErrorinfoController {
 
     @Autowired
