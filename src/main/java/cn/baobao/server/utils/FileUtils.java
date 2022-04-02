@@ -48,7 +48,7 @@ public class FileUtils {
     public boolean saveImg(String imgName, MultipartFile image, String folder, String uid, String id) {
         try {
             createDir(folder, uid, id);
-            if (ObjectUtils.isEmpty(uid)) {
+            if (null == uid) {
                 image.transferTo(new File(String.format("%s%s/%s/%s.jpg", PRE_PATH, folder, id, imgName)));
             } else {
                 image.transferTo(new File(String.format("%s%s/%s/%s/%s.jpg", PRE_PATH, folder, uid, id, imgName)));
@@ -98,13 +98,14 @@ public class FileUtils {
     }
 
     public void createDir(String folder, String uid, String id) {
-        if (!ObjectUtils.isEmpty(uid)) {
-            File uFile = new File(String.format("%s%s/%s", PRE_PATH, "plogs", uid));
-            uFile.mkdir();
+        if (ObjectUtils.isEmpty(folder) || ObjectUtils.isEmpty(id)) {
+            return;
         }
-        if (!ObjectUtils.isEmpty(id)) {
-            File file = new File(String.format("%s%s/%s/%s", PRE_PATH, folder, uid, id));
-            file.mkdir();
+        if ("plogs".equals(folder)) {
+            new File(String.format("%s%s/%s", PRE_PATH, folder, uid)).mkdir();
+            new File(String.format("%s%s/%s/%s", PRE_PATH, folder, uid, id)).mkdir();
+        } else {
+            new File(String.format("%s%s/%s", PRE_PATH, folder, id)).mkdir();
         }
     }
 }

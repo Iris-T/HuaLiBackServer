@@ -1,7 +1,9 @@
 package cn.baobao.server.service;
 
 import cn.baobao.server.pojo.Errorinfo;
+import cn.baobao.server.pojo.RespBean;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p>
@@ -13,4 +15,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IErrorinfoService extends IService<Errorinfo> {
 
+    RespBean feedback(MultipartFile[] images, String errinfo);
+
+    RespBean checkErrInfo(String id, boolean isValid);
 }

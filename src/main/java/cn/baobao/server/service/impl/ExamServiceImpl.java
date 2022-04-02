@@ -40,7 +40,11 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements IE
 
     @Override
     public List<Exam> getRandomCntProbs(int cnt) {
-        return examMapper.getRandomCntProbs(cnt);
+        List<Exam> exams = examMapper.getRandomCntProbs(cnt);
+        for (Exam prob : exams) {
+            prob.setAns(null);
+        }
+        return exams;
     }
 
     @Override

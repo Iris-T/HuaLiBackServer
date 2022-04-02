@@ -4,6 +4,8 @@ import cn.baobao.server.pojo.RespBean;
 import cn.baobao.server.pojo.User;
 import cn.baobao.server.mapper.UserMapper;
 import cn.baobao.server.service.IUserService;
+import cn.baobao.server.utils.CommonUtils;
+import cn.baobao.server.utils.FileUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +25,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Autowired
     private UserMapper userMapper;
-
-    /**
-     * @see 创建用户记录
-     * @param user
-     * @return
-     */
-    @Override
-    public RespBean insertOneUser(User user) {
-        return userMapper.insertOneUser(user) > 0 ? RespBean.success("注册成功") : RespBean.error("服务器错误，请联系管理员");
-    }
+    @Autowired
+    private CommonUtils commonUtils;
+    @Autowired
+    private FileUtils fileUtils;
 
     /**
      * @see 增加用户积分
@@ -57,5 +53,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             user.setTotalPoint(totalPoint);
             return updateById(user);
         }
+    }
+
+    @Override
+    public RespBean login(String phone, String password) {
+        User realUser = getOne(new QueryWrapper<User>()
+                .eq("phone", phone)
+                .eq("password", password));
+        if (ObjectUtils.isEmpty(realUser)) {
+            return RespBean.error("登录失败", null);
+        }
+        realUser.setPassword(null);
+        return RespBean.success("登录成功", realUser);
+    }
+
+    @Override
+    public RespBean signup(User user) {
+        String uid = commonUtils.getOnly1Id();
+        user.setId(uid);
+        RespBean respBean = insertOneUser(user);
+        fileUtils.createDir("plogs", uid, null);
+        return respBean;
+    }
+
+    /**
+     * @see 创建用户记录
+     * @param user
+     * @return
+     */
+    private RespBean insertOneUser(User user) {
+        return userMapper.insertOneUser(user) > 0 ? RespBean.success("注册成功") : RespBean.error("服务器错误，请联系管理员");
     }
 }

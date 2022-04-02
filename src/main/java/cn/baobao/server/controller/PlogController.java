@@ -33,68 +33,42 @@ public class PlogController {
 
     @Autowired
     private IPlogService plogService;
-    @Autowired
-    private CommonUtils commonUtils;
-    @Autowired
-    private FileUtils fileUtils;
 
     @ApiOperation(value = "上传plog")
     @PostMapping("/upload")
     public RespBean uploadPlog(@RequestBody Plog plog) {
-        String only1Id = commonUtils.getOnly1Id();
-        plog.setId(only1Id);
-        plog.setCreated(LocalDate.now());
-        plog.setIscheck(0);
-
-        return (plogService.save(plog)) ? RespBean.success("发布成功", only1Id) : RespBean.error("发送失败，请联系管理员");
+        if (ObjectUtils.isEmpty(plog)) {
+            return RespBean.error("数据有误，发布失败");
+        }
+        return plogService.uploadPlog(plog);
     }
 
     @ApiOperation(value = "提交plog照片")
     @PostMapping("/img/{id}")
     public RespBean uploadImg(@RequestPart("images") MultipartFile[] images, @PathVariable("id") String pid) {
-
-        Plog plog = plogService.getOne(new QueryWrapper<Plog>().eq("id", pid));
-        if (plog == null) {
-            return RespBean.error("提交图片失败,plog或不存在");
+        if (null == pid || ObjectUtils.isEmpty(images)) {
+            return RespBean.error("提交失败，数据有误");
         }
-
-        String imgs = plog.getImgs();
-        String imgPaths = ObjectUtils.isEmpty(imgs) ? "" : imgs;
-
-        for (MultipartFile image : images) {
-            String imgName = fileUtils.getOnly1FileName();
-            fileUtils.saveImg(imgName, image, "plogs", plog.getUid(), pid);
-            imgPaths = imgPaths.concat(imgName+",");
-        }
-
-        plog.setImgs(imgPaths);
-        return plogService.updateById(plog) ? RespBean.success("更新plog图片成功") : RespBean.error("更新失败，请联系管理员");
+        return plogService.uploadImg(images, pid);
     }
 
     @ApiOperation(value = "提交plog审核")
     @PostMapping("/check/{id}/{isValid}")
     public RespBean checkPlog(@PathVariable("id") String pid, @PathVariable("isValid") int isValid) {
-
-        Plog plog = plogService.getOne(new QueryWrapper<Plog>().eq("id", pid));
-        if (plog == null) {
-            return RespBean.error("用户该plog不存在");
+        if (null == pid || ObjectUtils.isEmpty(isValid)) {
+            return RespBean.error("提交失败，数据有误");
         }
-        if (isValid == 1 || isValid == 2) {
-            plog.setIscheck(isValid);
-        }
-
-        plog.setCheckdate(LocalDate.now());
-        return plogService.updateById(plog) ? RespBean.success("审核提交成功") : RespBean.error("审核提交失败");
+        return plogService.checkPlog(pid, isValid);
     }
 
     @ApiOperation(value = "通过ID获取详细plog信息")
     @GetMapping("/detail/{id}")
     public RespBean getPlogById(@PathVariable("id") String pid) {
-        Plog plog = plogService.getOne(new QueryWrapper<Plog>().eq("id", pid));
-        if (plog == null) {
-            return RespBean.error("获取失败");
+        if (ObjectUtils.isEmpty(pid)) {
+            return RespBean.error("获取信息失败，数据有误");
         }
-        return RespBean.success("获取成功", plog);
+        Plog plog = plogService.getOne(new QueryWrapper<Plog>().eq("id", pid));
+        return ObjectUtils.isEmpty(plog) ? RespBean.error("获取失败") : RespBean.success("获取成功", plog);
     }
 
     @ApiOperation(value = "获取所有未审核Plog")

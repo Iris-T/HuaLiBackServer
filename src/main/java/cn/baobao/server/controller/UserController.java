@@ -25,19 +25,15 @@ import java.util.List;
  * @since 2022-03-22
  */
 @Controller
+@ResponseBody
 @RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private IUserService userService;
-    @Autowired
-    private CommonUtils commonUtils;
-    @Autowired
-    private FileUtils fileUtils;
 
     @ApiOperation(value = "用户登录接口")
     @PostMapping("/login")
-    @ResponseBody
     public RespBean login(@RequestBody User user) {
         if (ObjectUtils.isEmpty(user)) {
             return RespBean.error("登录失败",null);
@@ -50,29 +46,16 @@ public class UserController {
         if (ObjectUtils.isEmpty(phone) || ObjectUtils.isEmpty(password)) {
             return RespBean.error("登录失败",null);
         }
-
-        User realUser = userService.getOne(new QueryWrapper<User>()
-                .eq("phone", phone)
-                .eq("password", password));
-        if (ObjectUtils.isEmpty(realUser)) {
-            return RespBean.error("登录失败", null);
-        }
-        realUser.setPassword(null);
-        return RespBean.success("登录成功", realUser);
+        return userService.login(phone, password);
     }
 
     @ApiOperation(value = "用户注册")
     @PostMapping("/signup")
-    @ResponseBody
     public RespBean signup(@RequestBody User user) {
         if (ObjectUtils.isEmpty(user)) {
             return RespBean.error("注册失败，参数错误", null);
         }
-        String uid = commonUtils.getOnly1Id();
-        user.setId(uid);
-        RespBean respBean = userService.insertOneUser(user);
-        fileUtils.createDir("plogs", uid, null);
-        return respBean;
+        return userService.signup(user);
     }
 
     @ApiOperation(value = "获取所有用户")

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -59,9 +58,7 @@ public class ExamController {
     public List<Exam> getRandomCntProbs(@PathVariable("cnt") int cnt) {
         // 对应三个难度
         if (cnt == 5 || cnt == 10 || cnt == 20) {
-            List<Exam> Probes = examService.getRandomCntProbs(cnt);
-            for (Exam prob : Probes) prob.setAns(null);
-            return Probes;
+            return examService.getRandomCntProbs(cnt);
         } else {
             return null;
         }

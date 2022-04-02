@@ -15,16 +15,24 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface IUserService extends IService<User> {
 
     /**
-     * @see 创建用户，插入用户记录
-     * @param user
-     * @return
-     */
-    RespBean insertOneUser(User user);
-
-    /**
      * @see 增加用户得分
      * @param points
      * @return
      */
     boolean upUserPoint(int points, String uid);
+
+    /**
+     * @see 用户登录
+     * @param phone
+     * @param password
+     * @return
+     */
+    RespBean login(String phone, String password);
+
+    /**
+     * @see 用户注册信息
+     * @param user
+     * @return
+     */
+    RespBean signup(User user);
 }
