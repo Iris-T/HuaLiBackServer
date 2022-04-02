@@ -1,7 +1,9 @@
 package cn.baobao.server.service;
 
 import cn.baobao.server.pojo.Goods;
+import cn.baobao.server.pojo.RespBean;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p>
@@ -13,4 +15,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IGoodsService extends IService<Goods> {
 
+    RespBean addGood(Goods good);
+
+    RespBean updateGoodImg(Goods good, MultipartFile[] images, String gid);
+
+    RespBean excGood(String gid, String uid);
 }

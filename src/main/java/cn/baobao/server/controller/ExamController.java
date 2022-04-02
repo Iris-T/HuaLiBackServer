@@ -2,9 +2,13 @@ package cn.baobao.server.controller;
 
 
 import cn.baobao.server.pojo.Exam;
+import cn.baobao.server.pojo.Examlog;
 import cn.baobao.server.pojo.RespBean;
 import cn.baobao.server.service.IExamService;
+import cn.baobao.server.service.IExamlogService;
+import cn.baobao.server.service.IUserService;
 import cn.baobao.server.utils.CommonUtils;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -64,16 +69,11 @@ public class ExamController {
 
     @ApiOperation(value = "审核答案")
     @PostMapping("/check")
-    public RespBean checkAns(@RequestParam("ids") List<String> ids, @RequestParam("ans") List<String> ans) {
+    public RespBean checkAns(@RequestParam("ids") List<String> ids, @RequestParam("ans") List<String> ans, @RequestParam("uid") String uid) {
         if (ObjectUtils.isEmpty(ids) || ObjectUtils.isEmpty(ans) || ids.size() != ans.size()) {
             return RespBean.error("数据有误");
         }
-        if (ids.size() == 5 || ids.size() == 10 || ids.size() == 20) {
-            int points = examService.rightCnt(ids, ans);
-            return RespBean.success("答案提交成功", points);
-        } else {
-            return RespBean.error("数量有误");
-        }
+        return examService.checkAns(ids, ans, uid);
     }
 
 }

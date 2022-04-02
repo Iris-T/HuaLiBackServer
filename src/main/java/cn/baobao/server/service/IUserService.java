@@ -20,4 +20,11 @@ public interface IUserService extends IService<User> {
      * @return
      */
     RespBean insertOneUser(User user);
+
+    /**
+     * @see 增加用户得分
+     * @param points
+     * @return
+     */
+    boolean upUserPoint(int points, String uid);
 }

@@ -1,6 +1,7 @@
 package cn.baobao.server.service;
 
 import cn.baobao.server.pojo.Admin;
+import cn.baobao.server.pojo.RespBean;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IAdminService extends IService<Admin> {
 
+    RespBean getAdminByUnameWithPwd(String username, String password);
 }

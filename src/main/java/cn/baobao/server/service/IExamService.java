@@ -1,6 +1,7 @@
 package cn.baobao.server.service;
 
 import cn.baobao.server.pojo.Exam;
+import cn.baobao.server.pojo.RespBean;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -18,4 +19,6 @@ public interface IExamService extends IService<Exam> {
     List<Exam> getRandomCntProbs(int cnt);
 
     int rightCnt(List<String> ids, List<String> ans);
+
+    RespBean checkAns(List<String> ids, List<String> ans, String uid);
 }

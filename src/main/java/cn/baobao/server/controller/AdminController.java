@@ -39,19 +39,7 @@ public class AdminController {
         }
         String username = admin.getUsername();
         String password = admin.getPassword();
-        // 登录信息不全，登录失败
-        if (ObjectUtils.isEmpty(username) || ObjectUtils.isEmpty(password)) {
-            return RespBean.error("登录失败", null);
-        }
-        // 查找用户信息
-        Admin realUser = adminService.getOne(new QueryWrapper<Admin>()
-                .eq("username", username)
-                .eq("password", password));
-
-        // 避免信息泄露
-        realUser.setPassword(null);
-        return ObjectUtils.isEmpty(realUser) ? RespBean.error("登录失败", null)
-                : RespBean.success("登录成功", realUser);
+        return adminService.getAdminByUnameWithPwd(username, password);
     }
 
     @ApiOperation(value = "获取（所有）管理员信息列表")

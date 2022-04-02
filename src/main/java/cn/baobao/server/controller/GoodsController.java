@@ -27,51 +27,30 @@ import java.util.List;
  * @since 2022-03-24
  */
 @Controller
+@ResponseBody
 @RequestMapping("/goods")
 public class GoodsController {
     @Autowired
-    private CommonUtils commonUtils;
-    @Autowired
     private IGoodsService goodsService;
-    @Autowired
-    private FileUtils fileUtils;
 
     @ApiOperation(value = "上架商品")
-    @ResponseBody
     @PostMapping("/new")
     public RespBean add1Good(@RequestBody Goods good) {
-
         if (ObjectUtils.isEmpty(good)) return RespBean.error("数据有误,请重新添加");
-        String only1Id = commonUtils.getOnly1Id();
-        good.setId(only1Id);
-        good.setCreated(LocalDate.now());
-        good.setIsactive(true);
-        return goodsService.save(good) ? RespBean.success("添加商品成功",only1Id) : RespBean.error("添加失败，请联系服务器管理员");
+        return goodsService.addGood(good);
     }
 
     @ApiOperation(value = "上传商品图片")
-    @ResponseBody
     @PostMapping("/img/{id}")
     public RespBean updateGoodImg(@RequestPart("images") MultipartFile[] images, @PathVariable("id") String gid) {
         Goods good = goodsService.getOne(new QueryWrapper<Goods>().eq("id", gid));
         if (good == null) {
             return RespBean.error("更新图片失败，商品信息或不存在");
         }
-        String imgs = good.getImgs();
-        String imgPaths = ObjectUtils.isEmpty(imgs) ? "" : imgs;
-
-        for (MultipartFile image : images) {
-            String fileName = fileUtils.getOnly1FileName();
-            fileUtils.saveImg(fileName, image, "goods", null, gid);
-            imgPaths = imgPaths.concat(fileName+",");
-        }
-
-        good.setImgs(imgPaths);
-        return goodsService.updateById(good) ? RespBean.success("更新商品图片成功") : RespBean.error("更新失败，请联系管理员");
+        return goodsService.updateGoodImg(good, images, gid);
     }
 
     @ApiOperation(value = "获取所有全部/过滤状态商品")
-    @ResponseBody
     @GetMapping("/{state}")
     public List<Goods> getAllGoods(@PathVariable("state") int filter) {
         switch (filter) {
@@ -86,7 +65,6 @@ public class GoodsController {
     }
 
     @ApiOperation(value = "启用商品")
-    @ResponseBody
     @PostMapping("/active/{id}")
     public RespBean activeGood(@PathVariable("id") String gid) {
         Goods good = goodsService.getOne(new QueryWrapper<Goods>().eq("id", gid));
@@ -100,7 +78,6 @@ public class GoodsController {
     }
 
     @ApiOperation(value = "下架商品")
-    @ResponseBody
     @PostMapping("/disable/{id}")
     public RespBean disableGood(@PathVariable("id") String gid) {
         Goods good = goodsService.getOne(new QueryWrapper<Goods>().eq("id", gid));
@@ -110,5 +87,15 @@ public class GoodsController {
         good.setIsactive(false);
         return goodsService.updateById(good) ? RespBean.success("弃用商品成功") : RespBean.error("服务器错误，弃用商品失败，请联系管理员");
     }
+
+    @ApiOperation(value = "兑换商品")
+    @PostMapping("/exc/{gid}")
+    public RespBean exchangeGood(@PathVariable("gid") String gid, @RequestParam("uid") String uid) {
+        if (ObjectUtils.isEmpty(gid) || ObjectUtils.isEmpty(uid)) {
+            return RespBean.error("数据错误");
+        }
+        return goodsService.excGood(gid, uid);
+    }
+
 
 }
