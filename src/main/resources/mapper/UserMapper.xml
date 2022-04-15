@@ -6,4 +6,22 @@
         INSERT INTO user(`id`, `phone`, `password`, `name`, `address`)
         VALUES (#{user.id}, #{user.phone}, #{user.password}, #{user.name}, #{user.address})
     </insert>
+
+    <insert id="updateBySign">
+        INSERT INTO signinfo(uid, signdate) VALUE (#{uid}, #{now})
+    </insert>
+
+    <select id="isTodaySign" resultType="java.lang.Integer">
+        SELECT COUNT(uid)
+        FROM signinfo
+        WHERE uid = #{uid}
+          AND signdate = #{now}
+    </select>
+
+    <update id="UserPointIncrOne" parameterType="java.lang.String">
+        UPDATE `user`
+        SET total_point   = total_point + 1,
+            current_point = current_point + 1
+        WHERE id = #{uid}
+    </update>
 </mapper>

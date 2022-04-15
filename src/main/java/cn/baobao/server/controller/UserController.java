@@ -4,9 +4,6 @@ package cn.baobao.server.controller;
 import cn.baobao.server.pojo.RespBean;
 import cn.baobao.server.pojo.User;
 import cn.baobao.server.service.IUserService;
-import cn.baobao.server.utils.CommonUtils;
-import cn.baobao.server.utils.FileUtils;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
@@ -60,9 +57,17 @@ public class UserController {
 
     @ApiOperation(value = "获取所有用户")
     @GetMapping("/all")
-    @ResponseBody
     public List<User> getAllUser() {
         return userService.list();
+    }
+
+    @ApiOperation(value = "用户签到接口，每次获得1积分")
+    @PostMapping("/signin/{uid}")
+    public RespBean Sign_in(@PathVariable("uid") String uid) {
+        if (ObjectUtils.isEmpty(uid)) {
+            return RespBean.error("数据错误");
+        }
+        return userService.Sign_in(uid);
     }
 
 }

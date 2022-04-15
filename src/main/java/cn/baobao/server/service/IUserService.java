@@ -35,4 +35,11 @@ public interface IUserService extends IService<User> {
      * @return
      */
     RespBean signup(User user);
+
+    /**
+     * 用户签到-每日一次，每次1积分
+     * @param uid 用户ID
+     * @return 成功与否
+     */
+    RespBean Sign_in(String uid);
 }

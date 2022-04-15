@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 /**
  * <p>
  *  服务实现类
@@ -73,6 +76,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         user.setId(uid);
         RespBean respBean = insertOneUser(user);
         fileUtils.createDir("plogs", uid, null);
+        return respBean;
+    }
+
+    @Override
+    public RespBean Sign_in(String uid) {
+        User user = getOne(new QueryWrapper<User>().eq("id", uid));
+        if (ObjectUtils.isEmpty(user)) {
+            return RespBean.error("用户不存在");
+        }
+        LocalDate now = LocalDateTime.now().toLocalDate();
+        RespBean respBean = new RespBean();
+
+        if (userMapper.isTodaySign(uid, now) == 1) {
+            respBean.setCode(403);
+            respBean.setMessage("用户今日已签到");
+        } else {
+            int i = userMapper.UserPointIncrOne(uid);
+            int res = userMapper.updateBySign(uid, now);
+            if (i > 0 && res > 0) {
+                respBean.setCode(200);
+                respBean.setMessage("签到成功");
+            } else {
+                respBean.setCode(401);
+                respBean.setMessage("签到失败，请重试");
+            }
+        }
         return respBean;
     }
 
